@@ -1,0 +1,41 @@
+#Yiqing Zhang CSE 2421 Lab6
+#execution has to begin at address 0
+	.pos 0
+init:
+	irmovq	$Stack, %rsp
+	call	main
+	halt
+main:	
+	irmovq	$16, %r10
+	subq	%r10, %rsp	# subq $16, %rsp
+	irmovq	$1,%r10	
+	rmmovq	%r10, (%rsp)	# long x = 1
+	rrmovq	%rsp, %rdx	# rdx <- &x
+	irmovq	y, %r10
+	mrmovq	(%r10), %rcx	# rcx <- y
+	call add
+	rmmovq	%rax, sum	# sum = add(&x, y) and return sum
+	irmovq	$16, %r10
+	addq	%r10, %rsp
+	ret
+add:
+	irmovq	$0, %rax	# result = 0
+	irmovq	$1, %rdi	# rdi <- 1
+	mrmovq	(%rdx), %rsi	# rsi <- x
+	mrmovq	(%rdx), %r10	# r10 <- x
+	subq	%rcx, %r10	# if (x - y) > 0
+	jg	done
+loop:	
+	addq	%rsi, %rax	# result += x
+	addq	%rdi, %rsi	# x++
+	rrmovq	%rsi, %r10	# r10 <- x
+	subq	%rcx, %r10	# if (x - y) <= 0
+	jle	loop
+done:
+	ret
+
+	.align 8
+y:	.quad	5		#y is a global variable
+sum:	.quad	0		#sum is a global variable
+	.pos	0x200
+Stack:	.quad	0
