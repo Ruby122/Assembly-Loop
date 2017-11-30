@@ -1,0 +1,17 @@
+[zhang.5687@beta Desktop]$ yis Simple.yo
+Stopped in 25 steps at PC = 0x13.  Status 'HLT', CC Z=0 S=0 O=0
+Changes to registers:
+%rax:	0x0000000000000000	0x0000000000000032	w = 50
+%rcx:	0x0000000000000000	0x00000000000001e8	address of w
+%rdx:	0x0000000000000000	0xffffffffffffffe2	z = -30
+%rsp:	0x0000000000000000	0x0000000000000200	bottom of stack
+%rsi:	0x0000000000000000	0x00000000000000b0	address of global variable y
+%rdi:	0x0000000000000000	0x0000000000000064	global variable x = 100
+%r10:	0x0000000000000000	0x0000000000000010	%r10 = 16 to add 16 to %rsp
+
+Changes to memory:
+0x00b8:	0x0000000000000000	0x0000000000000118	global variable sum = 280
+0x01e0:	0x0000000000000000	0x0000000000000067	Stack store the location of the first instruction of add
+0x01e8:	0x0000000000000000	0x0000000000000032	stack 1e8 stores w = 50
+0x01f8:	0x0000000000000000	0x0000000000000013	stack 1f8 stores location of halt
+

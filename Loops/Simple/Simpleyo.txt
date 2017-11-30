@@ -1,0 +1,36 @@
+                            | #execution has to begin at address 0
+0x000:                      | 	.pos 0
+0x000:                      | init:
+0x000: 30f40002000000000000 | 	irmovq	$Stack, %rsp
+0x00a: 801400000000000000   | 	call	main	
+0x013: 00                   | 	halt
+0x014:                      | main:
+0x014: 30fa1000000000000000 | 	irmovq	$16, %r10
+0x01e: 61a4                 | 	subq 	%r10, %rsp		# subq $16, %rsp
+0x020: 30f2e2ffffffffffffff | 	irmovq	$-30, %rdx		# rdx <- z = -30 
+0x02a: 30fa3200000000000000 | 	irmovq	$50, %r10
+0x034: 40a40000000000000000 | 	rmmovq	%r10, (%rsp)		#w = 50
+0x03e: 2041                 | 	rrmovq	%rsp, %rcx		#rcx <- &w
+0x040: 30faa800000000000000 | 	irmovq	$x, %r10		#r10 <- &x
+0x04a: 507a0000000000000000 | 	mrmovq	(%r10), %rdi		#rdi <- x
+0x054: 30f6b000000000000000 | 	irmovq	$y, %rsi		#rsi <- &y
+0x05e: 808800000000000000   | 	call add
+0x067: 400fb800000000000000 | 	rmmovq	%rax, sum		#sum = add(x, &y, z, &w)
+0x071: 50010000000000000000 | 	mrmovq	(%rcx), %rax		#return w
+0x07b: 30fa1000000000000000 | 	irmovq	$16, %r10
+0x085: 60a4                 | 	addq 	%r10, %rsp
+0x087: 90                   | 		ret
+0x088:                      | add:
+0x088: 2070                 | 	rrmovq %rdi, %rax		# int t = a
+0x08a: 50a60000000000000000 | 	mrmovq (%rsi), %r10		# r10 <- *b
+0x094: 60a0                 | 	addq %r10, %rax			# t = a + *b
+0x096: 6120                 | 	subq %rdx, %rax 		# t = a + *b - c
+0x098: 50a10000000000000000 | 	mrmovq (%rcx), %r10		# r10 <- d
+0x0a2: 61a0                 | 	subq %r10, %rax			# t = a + *b - c - *d
+0x0a4: 90                   | 	ret
+0x0a8:                      | 	.align 8
+0x0a8: 6400000000000000     | x: 	.quad	100
+0x0b0: c800000000000000     | y:	.quad	200
+0x0b8: 0000000000000000     | sum:	.quad	0
+0x200:                      | 	.pos	0x200
+0x200: 0000000000000000     | Stack:	.quad	0
