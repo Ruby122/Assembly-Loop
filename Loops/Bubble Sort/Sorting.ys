@@ -1,0 +1,88 @@
+#Yiqing Zhang CSE 2421 Lab6
+#execution has to begin at address 0
+	.pos 0
+init:
+	irmovq	$Stack, %rsp
+	call	main
+	halt
+main:	
+	irmovq	$15, %rsi	# movl	$10, %esi (rsi<-count:10)
+	irmovq	$a, %rdi	# movl	$a, %edi (rdi <-a)	
+	call bubble
+	ret
+bubble:
+	irmovq	$1, %r10	# leaq	-1(%rsi), %r8 (r8 <-last = count - 1)
+	rrmovq	%rsi, %r8	
+	subq	%r10, %r8	
+	irmovq	$0, %r9		# movl	$0, %r9	(r9 <- i = 0)
+	andq	%r8, %r8	# testq	%r8, %r8 (last > 0?)
+	jg	L11
+	ret
+L9:	
+	rrmovq	%rax, %r10	# movq	8(%rdi,%rax,8), %rdx (rdx <- a[i + 1])
+	addq	%r10, %r10
+	addq	%r10, %r10
+	addq	%r10, %r10
+	addq	%rdi, %r10
+	irmovq	$8, %r11
+	addq	%r11, %r10
+	mrmovq	(%r10), %rdx
+	rrmovq	%rax, %r10	#movq	(%rdi,%rax,8), %rcx (rcx <- a[i])	
+	addq	%r10, %r10
+	addq	%r10, %r10
+	addq	%r10, %r10
+	addq	%rdi, %r10
+	mrmovq	(%r10), %rcx	
+	rrmovq	%rdx, %r10	#cmpq	%rcx, %rdx 	
+	subq	%rcx,%r10			
+	jge	L4		#jge	.L4 (L4 if a[i] >= a[i + 1])
+	rrmovq	%rax, %r10	#movq	%rcx, 8(%rdi,%rax,8) (a[i + 1] = a[i])
+	addq	%r10, %r10
+	addq	%r10, %r10
+	addq	%r10, %r10
+	addq	%rdi, %r10
+	irmovq	$8, %r11
+	addq	%r11, %r10
+	rmmovq	%rcx, (%r10)
+	rrmovq	%rax, %r10	#movq	%rdx, (%rdi,%rax,8) (a[i] = a[i + 1])
+	addq	%r10, %r10
+	addq	%r10, %r10
+	addq	%r10, %r10
+	addq	%rdi, %r10
+	rmmovq	%rdx, (%r10)
+L4:
+	irmovq	$1, %r10	#addq	$1, %rax (rax <- i + 1)
+	addq	%r10, %rax	
+	rrmovq	%rax, %r10	#cmpq	%r8, %rax 
+	subq	%r8, %r10	
+	jne	L9		#jne	.L9 (jump to L9 if i + 1 < last)
+L7:
+	irmovq	$1, %r10	#subq	$1, %r8 (last--)
+	subq	%r10, %r8	
+	je	L8		#je	.L8 (jump out of loop if last = 0)
+L11:
+	rrmovq	%r9, %rax	#movq	%r9, %rax (rax <- i)
+	andq	%r8, %r8	#testq	%r8, %r8 
+	jg	L9		#jg	.L9 (if last > 0)
+	jmp	L7		#jmp	.L7
+L8:
+	ret
+	
+	.align 32
+a:	.quad	15
+	.quad	14
+	.quad	13
+	.quad	12
+	.quad	11
+	.quad	10
+	.quad	9
+	.quad	8
+	.quad	7
+	.quad	6
+	.quad	5
+	.quad	4
+	.quad	3
+	.quad	2
+	.quad	1
+	.pos	0x200
+Stack:	.long	0

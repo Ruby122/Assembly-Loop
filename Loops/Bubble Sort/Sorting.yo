@@ -1,0 +1,88 @@
+                            | #Yiqing Zhang CSE 2421 Lab6
+                            | #execution has to begin at address 0
+0x000:                      | 	.pos 0
+0x000:                      | init:
+0x000: 30f40002000000000000 | 	irmovq	$Stack, %rsp
+0x00a: 801400000000000000   | 	call	main
+0x013: 00                   | 	halt
+0x014:                      | main:	
+0x014: 30f60f00000000000000 | 	irmovq	$15, %rsi	# movl	$10, %esi (rsi<-count:10)
+0x01e: 30f72001000000000000 | 	irmovq	$a, %rdi	# movl	$a, %edi (rdi <-a)	
+0x028: 803200000000000000   | 	call bubble
+0x031: 90                   | 	ret
+0x032:                      | bubble:
+0x032: 30fa0100000000000000 | 	irmovq	$1, %r10	# leaq	-1(%rsi), %r8 (r8 <-last = count - 1)
+0x03c: 2068                 | 	rrmovq	%rsi, %r8	
+0x03e: 61a8                 | 	subq	%r10, %r8	
+0x040: 30f90000000000000000 | 	irmovq	$0, %r9		# movl	$0, %r9	(r9 <- i = 0)
+0x04a: 6288                 | 	andq	%r8, %r8	# testq	%r8, %r8 (last > 0?)
+0x04c: 76f900000000000000   | 	jg	L11
+0x055: 90                   | 	ret
+0x056:                      | L9:	
+0x056: 200a                 | 	rrmovq	%rax, %r10	# movq	8(%rdi,%rax,8), %rdx (rdx <- a[i + 1])
+0x058: 60aa                 | 	addq	%r10, %r10
+0x05a: 60aa                 | 	addq	%r10, %r10
+0x05c: 60aa                 | 	addq	%r10, %r10
+0x05e: 607a                 | 	addq	%rdi, %r10
+0x060: 30fb0800000000000000 | 	irmovq	$8, %r11
+0x06a: 60ba                 | 	addq	%r11, %r10
+0x06c: 502a0000000000000000 | 	mrmovq	(%r10), %rdx
+0x076: 200a                 | 	rrmovq	%rax, %r10	#movq	(%rdi,%rax,8), %rcx (rcx <- a[i])	
+0x078: 60aa                 | 	addq	%r10, %r10
+0x07a: 60aa                 | 	addq	%r10, %r10
+0x07c: 60aa                 | 	addq	%r10, %r10
+0x07e: 607a                 | 	addq	%rdi, %r10
+0x080: 501a0000000000000000 | 	mrmovq	(%r10), %rcx	
+0x08a: 202a                 | 	rrmovq	%rdx, %r10	#cmpq	%rcx, %rdx 	
+0x08c: 611a                 | 	subq	%rcx,%r10			
+0x08e: 75cb00000000000000   | 	jge	L4		#jge	.L4 (L4 if a[i] >= a[i + 1])
+0x097: 200a                 | 	rrmovq	%rax, %r10	#movq	%rcx, 8(%rdi,%rax,8) (a[i + 1] = a[i])
+0x099: 60aa                 | 	addq	%r10, %r10
+0x09b: 60aa                 | 	addq	%r10, %r10
+0x09d: 60aa                 | 	addq	%r10, %r10
+0x09f: 607a                 | 	addq	%rdi, %r10
+0x0a1: 30fb0800000000000000 | 	irmovq	$8, %r11
+0x0ab: 60ba                 | 	addq	%r11, %r10
+0x0ad: 401a0000000000000000 | 	rmmovq	%rcx, (%r10)
+0x0b7: 200a                 | 	rrmovq	%rax, %r10	#movq	%rdx, (%rdi,%rax,8) (a[i] = a[i + 1])
+0x0b9: 60aa                 | 	addq	%r10, %r10
+0x0bb: 60aa                 | 	addq	%r10, %r10
+0x0bd: 60aa                 | 	addq	%r10, %r10
+0x0bf: 607a                 | 	addq	%rdi, %r10
+0x0c1: 402a0000000000000000 | 	rmmovq	%rdx, (%r10)
+0x0cb:                      | L4:
+0x0cb: 30fa0100000000000000 | 	irmovq	$1, %r10	#addq	$1, %rax (rax <- i + 1)
+0x0d5: 60a0                 | 	addq	%r10, %rax	
+0x0d7: 200a                 | 	rrmovq	%rax, %r10	#cmpq	%r8, %rax 
+0x0d9: 618a                 | 	subq	%r8, %r10	
+0x0db: 745600000000000000   | 	jne	L9		#jne	.L9 (jump to L9 if i + 1 < last)
+0x0e4:                      | L7:
+0x0e4: 30fa0100000000000000 | 	irmovq	$1, %r10	#subq	$1, %r8 (last--)
+0x0ee: 61a8                 | 	subq	%r10, %r8	
+0x0f0: 730f01000000000000   | 	je	L8		#je	.L8 (jump out of loop if last = 0)
+0x0f9:                      | L11:
+0x0f9: 2090                 | 	rrmovq	%r9, %rax	#movq	%r9, %rax (rax <- i)
+0x0fb: 6288                 | 	andq	%r8, %r8	#testq	%r8, %r8 
+0x0fd: 765600000000000000   | 	jg	L9		#jg	.L9 (if last > 0)
+0x106: 70e400000000000000   | 	jmp	L7		#jmp	.L7
+0x10f:                      | L8:
+0x10f: 90                   | 	ret
+                            | 	
+0x120:                      | 	.align 32
+0x120: 0f00000000000000     | a:	.quad	15
+0x128: 0e00000000000000     | 	.quad	14
+0x130: 0d00000000000000     | 	.quad	13
+0x138: 0c00000000000000     | 	.quad	12
+0x140: 0b00000000000000     | 	.quad	11
+0x148: 0a00000000000000     | 	.quad	10
+0x150: 0900000000000000     | 	.quad	9
+0x158: 0800000000000000     | 	.quad	8
+0x160: 0700000000000000     | 	.quad	7
+0x168: 0600000000000000     | 	.quad	6
+0x170: 0500000000000000     | 	.quad	5
+0x178: 0400000000000000     | 	.quad	4
+0x180: 0300000000000000     | 	.quad	3
+0x188: 0200000000000000     | 	.quad	2
+0x190: 0100000000000000     | 	.quad	1
+0x200:                      | 	.pos	0x200
+0x200: 00000000             | Stack:	.long	0
